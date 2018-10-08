@@ -1,6 +1,7 @@
 /*****
  * Eipi Line Follower developed by:
  *    -Juan José Carranza García
+ *    -Salvador Esparza Godinez
  * */
  
 #include "eipi_follower.h"
