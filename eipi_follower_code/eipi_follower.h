@@ -1,5 +1,5 @@
-#ifndef LINE_CHAVA_H
-#define LINE_CHAVA_H
+#ifndef EIPI_FOLLOWER_H
+#define EIPI_FOLLOWER_H
 
 #include <Arduino.h>
 #include "barra.h"
