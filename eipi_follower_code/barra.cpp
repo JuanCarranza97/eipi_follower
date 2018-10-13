@@ -1,6 +1,7 @@
 #include "barra.h"
 int sensores[8], min_value[8],max_value[8];
 int last_position = 0;
+int flying_sensors=0;
 
 void output_leds(int x){
   digitalWrite(S0,x&1);
@@ -14,7 +15,7 @@ void barra_init (void){
     pinMode(S2,OUTPUT);
 }
 
-void leer_sensores (int x){
+bool leer_sensores (int x){
    if(x==2){
      for(int i=0; i<8; i++){
         output_leds(i);
@@ -22,21 +23,35 @@ void leer_sensores (int x){
      }
   }
   else if(x==1){ //se leerá linea negra
+    flying_sensors=0;
     for(int i=0; i<8; i++){
       output_leds(i);
       sensores[i]=map(analogRead(OUT), min_value[i], max_value[i], 0, 1000);
-      if(sensores[i]>1000) sensores[i]=1000;
+      if(i>0)if(abs(sensores[i]-sensores[i-1])>100)flying_sensors++;
+      if(sensores[i]>1000){
+        sensores[i]=1000;
+      }
       if(sensores[i]<0) sensores[i]=0;
     }
   }
   else if(x==0){//se leerá linea blanca
+    flying_sensors=0;
     for(int i=0; i<8; i++){
       output_leds(i);
       sensores[i]=map(analogRead(OUT), min_value[i], max_value[i], 1000, 0);
+      if(i>0)if(abs(sensores[i]-sensores[i-1])>100)flying_sensors++;
       if(sensores[i]>1000) sensores[i]=1000;
-      if(sensores[i]<0) sensores[i]=0;
+      if(sensores[i]<0){
+        sensores[i]=0;
+      }
     }
+    
   }
+  if (flying_sensors>5){
+      return false;
+    }
+    return true;
+ 
 }
 
 void imprimir_sensores(void){
@@ -97,9 +112,8 @@ void read_calibration(void){
 int leer_linea(int y){
   long numerador = 0;
   int denominador = 0;
-  leer_sensores(y);
-
-  for (int i=0; i<8; i++){ 
+  if(leer_sensores(y)){
+      for (int i=0; i<8; i++){ 
     numerador += (long)(sensores[i])*i*1000;
     denominador += sensores[i];
     //Serial.print(String(numerador)+" ");
@@ -116,6 +130,12 @@ int leer_linea(int y){
   int x = numerador/denominador;
   last_position = x;
   return x;
+  }
+  else{
+    return -3;
+  }
+
+
 }
 
 

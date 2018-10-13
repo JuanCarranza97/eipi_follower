@@ -1,15 +1,13 @@
-/*****
- * Eipi Line Follower developed by:
- *    -Juan José Carranza García
- *    -Salvador Esparza Godinez
- * */
- 
-#include "eipi_follower.h"
+#include "LINE_CHAVA.h"
 bool line_run = false;
 extern int line_color;
+extern bool state;
 
+/*  S1 corre
+ *  si esta corriendo y se levanta S2 lo saca del ciclo
+ */
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
   Serial.println("Bienvenido al seguidor ealaipicito");
   ayuda();
   ADCSRA &= ~((1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0));  // remove bits set by Arduino library
@@ -55,18 +53,11 @@ void loop() {
       delay(100);
     }
     
-    while(!SW_1){
+    while(!SW_1 && state){
       main_controller();
-
-//      if(SW_2){
-//        set_motors(20,-20);
-//      }
-//      else{
-//        set_motors(-20,20);
-//      }
     }
     set_motors(0,0);
-    
+    state=true;
     Serial.println("Me sali del modo carrera");
     LED_1_OFF;
     LED_2_OFF;
@@ -84,7 +75,7 @@ void ayuda(void){
   Serial.println("a-imprime los valores de la barra sin mapear");
   Serial.println("b-imprime los valores de la barra mapeados");
   Serial.println("c-calibra");
-  Serial.println("s-guarda la calibración");
+  Serial.println("s-guarda la calibracion");
   Serial.println("p-cambia el color de la linea");
   Serial.println("m-muestra la posicion de la linea");
   Serial.println("***********************");
