@@ -1,6 +1,6 @@
 #include "Controlador.h"
 int line_color= true; //si es 1 es linea negra; si es 0 linea blanca
-
+//puto el que lo lea
 void main_controller(void){
   int posicion = leer_linea(line_color);
           if (posicion>0){
